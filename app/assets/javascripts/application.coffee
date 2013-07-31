@@ -1,6 +1,6 @@
 #= require jquery
 
-class window.CincyForclosures
+class window.CincyForeclosures
   constructor: (options={})->
     @properties = options.properties
     @map = new google.maps.Map options.el,
@@ -33,8 +33,8 @@ class window.CincyForclosures
       infowindow.open(@map, marker)
 
 $ ->
-  cincyForclosures = new CincyForclosures
+  cincyForeclosures = new CincyForeclosures
     properties: window.properties
     el: $("#map").get(0)
 
-  cincyForclosures.render()
+  cincyForeclosures.render()
