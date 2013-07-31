@@ -10,13 +10,27 @@ class window.CincyForclosures
 
   render: ->
     for property in @properties
-      @renderPoint(property)
+      marker = @renderMarker(property)
+      infowindow = @renderInfoWindow(property)
+      @addMarkerListener(marker, infowindow)
 
-  renderPoint: (property) ->
+
+  renderMarker: (property) ->
     new google.maps.Marker
       map: @map
       position: new google.maps.LatLng(property.latitude, property.longitude);
       title: property.address
+
+  renderInfoWindow: (property) ->
+    content = ""
+    for key, value of property
+      content += "<dl class='info__list'><dt>#{key}: </dt><dd>#{value}</dd></dl>"
+    new google.maps.InfoWindow
+      content: content
+
+  addMarkerListener: (marker, infowindow) ->
+    google.maps.event.addListener marker, 'click', ->
+      infowindow.open(@map, marker)
 
 $ ->
   cincyForclosures = new CincyForclosures
