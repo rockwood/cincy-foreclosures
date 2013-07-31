@@ -1,0 +1,9 @@
+<div id="map"></div>
+<button id="reload">Reload</button>
+
+<% content_for :javascript do %>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgwXuQisFkDlz2iDqQd_0903ajUj7SMpo&sensor=true"></script>
+  <script type='text/javascript'>
+    window.properties = <%= raw @properties.to_json %>
+  </script>
+<% end %>
