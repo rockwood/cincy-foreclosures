@@ -1,5 +1,14 @@
-<div id="map"></div>
-<button id="reload">Reload</button>
+<div id="map" ng-app="CF" ng-controller="MapController">
+  <div id="map__controls">
+    <p>
+      <input type="checkbox" ng-model="showWithdrawn" />
+      <span>Show Withdrawn</span>
+    </p>
+
+    <button id="map__reload">Reload</button>
+  </div>
+  <div id="map__canvas"></div>
+</div>
 
 <% content_for :javascript do %>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgwXuQisFkDlz2iDqQd_0903ajUj7SMpo&sensor=true"></script>
