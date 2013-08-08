@@ -39,6 +39,7 @@ CF.factory 'Map', (properties) ->
         center: new google.maps.LatLng(39.1619, -84.4569)
         zoom: 12
         mapTypeId: google.maps.MapTypeId.ROADMAP
+      @render()
 
     render: ->
       for property in @properties
@@ -53,7 +54,7 @@ CF.factory 'Map', (properties) ->
         title: property.address
 
     renderInfoWindow: (property) ->
-      content = "withdrawn: " + property.withdrawn
+      content = property.address
       new google.maps.InfoWindow
         content: content
 
@@ -77,7 +78,7 @@ CF.factory 'Map', (properties) ->
 
 CF.controller 'MapController', ($scope, Map) ->
   map = new Map(el: $('#map__canvas').get(0))
-  map.render()
+
   $scope.showWithdrawn = false
   $scope.properties = map.properties
 
