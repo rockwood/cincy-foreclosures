@@ -1,11 +1,25 @@
 <div id="map" ng-app="CF" ng-controller="MapController">
   <div id="map__controls">
     <p>
-      <input type="checkbox" ng-model="showWithdrawn" />
-      <span>Show Withdrawn</span>
+      <label>
+        <input type="checkbox" ng-model="filters.showInactive" />
+        <span class="label__text">Show Inactive</span>
+      </label>
     </p>
 
-    <button id="map__reload">Reload</button>
+    <p>
+      <label>
+        <input type="checkbox" ng-model="filters.showActive" />
+        <span class="label__text">Show Active</span>
+      </label>
+    </p>
+
+<!--     <p>
+      <label>
+        <input type="date" ng-model="filters.saleDate" />
+        <span class="label__text">Sale Date</span>
+      </label>
+    </p> -->
   </div>
   <div id="map__canvas"></div>
 </div>
@@ -13,6 +27,6 @@
 <% content_for :javascript do %>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgwXuQisFkDlz2iDqQd_0903ajUj7SMpo&sensor=true"></script>
   <script type='text/javascript'>
-    window.properties = <%= raw @properties.to_json %>
+    window.propertiesJson = <%= raw @properties.to_json %>
   </script>
 <% end %>

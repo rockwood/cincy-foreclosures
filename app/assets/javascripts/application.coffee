@@ -4,92 +4,96 @@
 
 window.CF = angular.module('CF', []);
 
-CF.factory 'properties', ->
-  propertiesArray = []
-
-  for property in window.properties
-    propertiesArray.push
-      id:             property.id
-      address:        property.address
-      appraisal:      property.appraisal
-      attorney:       property.attorney
-      attorneyPhone:  property.attorney_phone
-      caseNumber:     property.case_number
-      city:           property.city
-      latitude:       property.latitude
-      longitude:      property.longitude
-      minimumBid:     property.minimum_bid
-      owner:          property.owner
-      plaintiff:      property.plaintiff
-      state:          property.state
-      township:       property.township
-      withdrawn:      property.withdrawn
-      zip:            property.zip
-      sale_date:      new Date(property.sale_date)
-      createdAt:      new Date(property.created_at)
-      updatedAt:      new Date(property.updated_at)
-
-  propertiesArray
-
-CF.factory 'Map', (properties) ->
-  class Map
+CF.factory 'Property', ->
+  class Property
     constructor: (options={})->
-      @properties = properties
-      @map = new google.maps.Map options.el,
-        center: new google.maps.LatLng(39.1619, -84.4569)
-        zoom: 12
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      @render()
+      angular.extend this,
+        id:             options.id
+        address:        options.address
+        appraisal:      options.appraisal
+        attorney:       options.attorney
+        attorneyPhone:  options.attorney_phone
+        caseNumber:     options.case_number
+        city:           options.city
+        latitude:       options.latitude
+        longitude:      options.longitude
+        minimumBid:     options.minimum_bid
+        owner:          options.owner
+        plaintiff:      options.plaintiff
+        state:          options.state
+        township:       options.township
+        active:         !options.withdrawn
+        zip:            options.zip
+        saleDate:       new Date(options.sale_date)
+        createdAt:      new Date(options.created_at)
+        updatedAt:      new Date(options.updated_at)
 
-    render: ->
-      for property in @properties
-        property.marker = @renderMarker(property)
-        property.infowindow = @renderInfoWindow(property)
-        @addMarkerListener(property.marker, property.infowindow)
+CF.factory 'PropertyMarker', ->
+  class PropertyMarker
+    constructor: (map, property)->
+      @map = map
+      @property = property
+      @marker = @buildMarker()
+      @infowindow = @buildInfoWindow()
+      @addMarkerListener()
 
-    renderMarker: (property) ->
+    buildMarker: ->
       new google.maps.Marker
         map: @map
-        position: new google.maps.LatLng(property.latitude, property.longitude);
-        title: property.address
+        position: new google.maps.LatLng(@property.latitude, @property.longitude);
+        title: @property.address
 
-    renderInfoWindow: (property) ->
-      content = property.address
+    buildInfoWindow: ->
+      content = @property.address
       new google.maps.InfoWindow
         content: content
 
-    addMarkerListener: (marker, infowindow) ->
-      google.maps.event.addListener marker, 'click', ->
-        infowindow.open(@map, marker)
+    addMarkerListener: ->
+      google.maps.event.addListener @marker, 'click', =>
+        @infowindow.open(@map, @marker)
 
-    showAllMarkers: ->
-      for property in @properties
-        property.marker.setVisible(true)
+    show: ->
+      @marker.setVisible(true)
 
-    hideAllMarkers: ->
-      for property in @properties
-        property.marker.setVisible(false)
+    hide: ->
+      @marker.setVisible(false)
 
-    filterMarkers: (query) ->
-      return if query == false
-      @hideAllMarkers()
-      for property in _(@properties).where(query)
-        property.marker.setVisible(true)
+CF.factory 'MarkerFilter', ->
+  class MarkerFilter
+    constructor: (options)->
+      @markers = options.markers
 
-CF.controller 'MapController', ($scope, Map) ->
-  map = new Map(el: $('#map__canvas').get(0))
+    execute: (filters) ->
+      for marker in @markers
+        marker.hide()
+        if filters.showActive && marker.property.active == true
+          marker.show()
+        if filters.showInactive && marker.property.active == false
+          marker.show()
 
-  $scope.showWithdrawn = false
-  $scope.properties = map.properties
+CF.controller 'MapController', ($scope, Property, PropertyMarker, MarkerFilter) ->
+  map = new google.maps.Map $('#map__canvas').get(0),
+    center: new google.maps.LatLng(39.1619, -84.4569)
+    zoom: 12
+    mapTypeId: google.maps.MapTypeId.ROADMAP
 
-  filter = (query) ->
-    return $scope.properties = properties.all if query == false
-    $scope.properties = properties.where(query)
+  propertyMarkers = []
 
-  $scope.$watch 'showWithdrawn', ->
-    if $scope.showWithdrawn == true
-      map.showAllMarkers()
-    else
-      map.filterMarkers(withdrawn: false)
+  filters =
+    showActive: true
+    showInactive: true
+    saleDate: null
+
+  for obj in window.propertiesJson
+    propertyMarkers.push new PropertyMarker(map, new Property(obj))
+
+  markerFilter = new MarkerFilter(markers: propertyMarkers)
+
+  filter = ->
+    markerFilter.execute filters
+
+  $scope.filters = filters
+
+  $scope.$watch 'filters', filter, true
 
 
