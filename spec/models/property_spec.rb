@@ -17,4 +17,14 @@ describe Property do
       Property.not_geocoded.count.should == 0
     end
   end
+
+  describe ".current" do
+    let(:date){ Date.new(2013, 01, 01) }
+    let!(:current_property){ Property.create(address: "123", sale_date: date + 1.year ) }
+    let!(:past_property){ Property.create(address: "321", sale_date: date - 1.year) }
+    it "returns properties with a sale date after a given date" do
+      Property.current(date).should include(current_property)
+      Property.current(date).should_not include(past_property)
+    end
+  end
 end

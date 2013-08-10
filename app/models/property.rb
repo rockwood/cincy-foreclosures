@@ -13,4 +13,8 @@ class Property < ActiveRecord::Base
       property.save
     end
   end
+
+  def self.current(date=Date.today)
+    where("sale_date >= ?", date)
+  end
 end

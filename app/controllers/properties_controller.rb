@@ -1,5 +1,5 @@
 class PropertiesController < ApplicationController
   def index
-    @properties = Property.geocoded
+    @properties = Property.current.geocoded
   end
 end
