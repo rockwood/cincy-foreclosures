@@ -1,6 +1,8 @@
 #= require jquery
 #= require underscore
 #= require angular
+#= require moment
+#= require_tree ./templates
 
 window.CF = angular.module('CF', []);
 
@@ -30,6 +32,8 @@ CF.factory 'Property', ->
 
 CF.factory 'PropertyMarker', ->
   class PropertyMarker
+    template: JST["templates/infowindow"]
+
     constructor: (map, property)->
       @map = map
       @property = property
@@ -44,9 +48,8 @@ CF.factory 'PropertyMarker', ->
         title: @property.address
 
     buildInfoWindow: ->
-      content = @property.address
       new google.maps.InfoWindow
-        content: content
+        content: @template(@property)
 
     addMarkerListener: ->
       google.maps.event.addListener @marker, 'click', =>

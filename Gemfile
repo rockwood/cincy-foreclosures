@@ -11,6 +11,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'jquery-rails'
 gem 'mechanize'
 gem 'geocoder'
+gem 'ejs'
 
 group :development, :test do
   gem 'pry'

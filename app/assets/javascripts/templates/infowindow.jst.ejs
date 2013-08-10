@@ -1,0 +1,44 @@
+<h2 class="property__title">
+  <%= address %>
+  <% if(active){ %> (active) <% } %>
+</h2>
+<dl>
+  <dt>SaleDate</dt>
+  <dd><%= moment(saleDate).format("MMM Do YYYY") %></dd>
+</dl>
+
+<dl>
+  <dt>Appraisal</dt>
+  <dd><%= appraisal %></dd>
+</dl>
+
+<dl>
+  <dt>MinimumBid</dt>
+  <dd><%= minimumBid %></dd>
+</dl>
+
+<dl>
+  <dt>CaseNumber</dt>
+  <dd><%= caseNumber %></dd>
+</dl>
+
+<dl>
+  <dt>Plaintiff</dt>
+  <dd><%= plaintiff %></dd>
+</dl>
+
+<dl>
+  <dt>Defendant</dt>
+  <dd><%= owner %></dd>
+</dl>
+
+<dl>
+  <dt>Attorney</dt>
+  <dd><%= attorney %></dd>
+</dl>
+
+<dl>
+  <dt>Township</dt>
+  <dd><%= township %></dd>
+</dl>
+
